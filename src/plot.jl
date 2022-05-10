@@ -1,7 +1,7 @@
 using PGFPlotsX, LaTeXStrings 
 ## Main functions 
 function plot_partition(part::Vector;inds=[1,2],slice_vals=Float64[], key=p->getfield(p,:iter),alpha=1.0,axis=[-1.0,1.0,-1.0,1.0],solver=:GLPK)
-  if(length(part)==0) error("The partition is empty") end
+  if(length(part)==0 || isempty(part[end].Ath)) error("The partition is empty") end
   poly_table,vert_table = transform_part_to_tables(part,inds,slice_vals,key;solver)
   pgfplot_partition(poly_table,vert_table,inds,axis)
 end
