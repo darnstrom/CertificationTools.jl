@@ -1,0 +1,20 @@
+name = "CertificationTools"
+uuid = "e959eb7f-7813-4c88-8f86-10871713402b"
+authors = ["Daniel Arnström <daniel.arnstrom@liu.se>"]
+version = "0.1.0"
+
+[deps]
+GLPK = "60bf3e95-4087-53dc-ae20-288a0d20c6a6"
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+PGFPlotsX = "8314cec4-20b6-5062-9cdb-752b83310925"
+Polyhedra = "67491407-f73d-577b-9b50-8179a7c68029"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
