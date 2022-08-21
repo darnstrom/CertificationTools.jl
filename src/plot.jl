@@ -1,9 +1,9 @@
 using PGFPlotsX, LaTeXStrings 
 ## Main functions 
-function plot_partition(part::Vector;inds=[1,2],slice_vals=Float64[], key=p->getfield(p,:iter),alpha=1.0,axis=[-1.0,1.0,-1.0,1.0],solver=:GLPK)
+function plot_partition(part::Vector;inds=[1,2],slice_vals=Float64[], key=p->getfield(p,:iter),alpha=1.0,axis=[-1.0,1.0,-1.0,1.0],solver=:GLPK, facet_color="black")
   if(length(part)==0 || isempty(part[end].Ath)) error("The partition is empty") end
   poly_table,vert_table = transform_part_to_tables(part,inds,slice_vals,key;solver)
-  pgfplot_partition(poly_table,vert_table,inds,axis)
+  pgfplot_partition(poly_table,vert_table,inds,axis,facet_color)
 end
 function plot_samples(samples;inds=[1,2],axis=[-1.0,1.0,-1.0,1.0])
   pgfplot_samples(samples,inds=inds,axis=axis)
@@ -56,7 +56,7 @@ function transform_part_to_tables(part::Vector,inds::Vector{Int64},slice_vals::V
 end
 ## PGF partition
 function pgfplot_partition(poly_table::Matrix{Int64},vert_table::Matrix{Float64},inds,
-	axis = [-1.0,1.0,-1.0,1.0];facet_color="black")
+	axis = [-1.0,1.0,-1.0,1.0],facet_color="black")
   max_iter = maximum(poly_table[:,end]);
   min_iter = minimum(poly_table[:,end]);
   cbar_ticks = collect(min_iter:Int64(ceil((max_iter-min_iter)/6)):max_iter)
