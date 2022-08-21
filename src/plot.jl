@@ -1,12 +1,12 @@
 using PGFPlotsX, LaTeXStrings 
 ## Main functions 
-function plot_partition(part::Vector;inds=[1,2],slice_vals=Float64[], key=p->getfield(p,:iter),alpha=1.0,axis=[-1.0,1.0,-1.0,1.0],solver=:GLPK, facet_color="black")
+function plot_partition(part::Vector;inds=[1,2],slice_vals=Float64[], key=p->getfield(p,:iter),alpha=1.0,axis=[-1.0,1.0,-1.0,1.0],solver=:GLPK, facet_color="black", show_ticks="true")
   if(length(part)==0 || isempty(part[end].Ath)) error("The partition is empty") end
   poly_table,vert_table = transform_part_to_tables(part,inds,slice_vals,key;solver)
-  pgfplot_partition(poly_table,vert_table,inds,axis,facet_color)
+  pgfplot_partition(poly_table,vert_table,inds,axis,facet_color,show_ticks)
 end
-function plot_samples(samples;inds=[1,2],axis=[-1.0,1.0,-1.0,1.0])
-  pgfplot_samples(samples,inds=inds,axis=axis)
+function plot_samples(samples;inds=[1,2],axis=[-1.0,1.0,-1.0,1.0],show_ticks="true")
+  pgfplot_samples(samples,inds=inds,axis=axis,show_ticks=show_ticks)
 end
 ## Auxiliary function 
 function transform_part_to_tables(part::Vector,inds::Vector{Int64},slice_vals::Vector{Float64},key::Function;solver=:GLPK,verbose=true)
@@ -56,7 +56,7 @@ function transform_part_to_tables(part::Vector,inds::Vector{Int64},slice_vals::V
 end
 ## PGF partition
 function pgfplot_partition(poly_table::Matrix{Int64},vert_table::Matrix{Float64},inds,
-	axis = [-1.0,1.0,-1.0,1.0],facet_color="black")
+	axis = [-1.0,1.0,-1.0,1.0],facet_color="black",show_ticks="true")
   max_iter = maximum(poly_table[:,end]);
   min_iter = minimum(poly_table[:,end]);
   cbar_ticks = collect(min_iter:Int64(ceil((max_iter-min_iter)/6)):max_iter)
@@ -73,6 +73,8 @@ function pgfplot_partition(poly_table::Matrix{Int64},vert_table::Matrix{Float64}
 			 ylabel_style={yshift="-20pt"},
 			 xtick=axis[1:2],
 			 ytick=axis[3:4],
+             xmajorticks=show_ticks,
+             ymajorticks=show_ticks,
 			 colorbar,
 			 colorbar_horizontal,
 			 colorbar_sampled,
@@ -101,13 +103,15 @@ function pgfplot_partition(poly_table::Matrix{Int64},vert_table::Matrix{Float64}
 end
 
 ## PGF samples
-function pgfplot_samples(Samples;inds=[1,2],axis=[-1.0,1.0,-1.0,1.0])
+function pgfplot_samples(Samples;inds=[1,2],axis=[-1.0,1.0,-1.0,1.0],show_ticks="true")
   max_iter = maximum(Samples[end,:]);
   min_iter = minimum(Samples[end,:]);
   cbar_ticks = collect(min_iter:Int64(ceil((max_iter-min_iter)/6)):max_iter)
   cbar_ticks .+= Int64(floor((max_iter-cbar_ticks[end])/2));
 @pgf Axis(
 		  {
+           xlabel = latexstring("\\theta_"*string(inds[1])),
+           ylabel = latexstring("\\theta_"*string(inds[2])),
 		   xmin=axis[1],xmax=axis[2],
 		   ymin=axis[3],ymax=axis[4],
 		   point_meta_min=min_iter-0.5,
@@ -116,6 +120,8 @@ function pgfplot_samples(Samples;inds=[1,2],axis=[-1.0,1.0,-1.0,1.0])
 		   ylabel_style={yshift="-20pt"},
 		   xtick=axis[1:2],
 		   ytick=axis[3:4],
+           xmajorticks=show_ticks,
+           ymajorticks=show_ticks,
 		   colorbar,
 		   colorbar_horizontal,
 		   colorbar_sampled,
