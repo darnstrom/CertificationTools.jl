@@ -13,7 +13,16 @@ function sample_solver(problem,lb,ub,N;sampling=:grid)
 	n_grid = Int(floor(N^(1/nth)))
 	θs = Iterators.product([LinRange(lb[i],ub[i],n_grid) for i in 1:nth]...)
   end
-  return reduce(hcat,[vcat(collect(θ),problem(collect(θ))) for θ in θs]) 
+  #return reduce(hcat,[vcat(collect(θ),problem(collect(θ))) for θ in θs]) 
+  samples = zeros(nth+1,0)
+  for (k,θ) in enumerate(θs)
+      if(k%10 == 0)
+          print("\r Sampling problems: $(round(k/N*100,digits=2))%          ");
+      end
+      s = vcat(collect(θ),problem(collect(θ)))
+      samples = hcat(samples,s)
+  end
+  return samples
 end
 ## Compute Chebyshev centers
 # part is a vector of regions 
