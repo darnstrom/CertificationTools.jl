@@ -1,3 +1,6 @@
+using MathOptInterface
+const MOI = MathOptInterface
+
 ## Sample solver
 # problem is a function that takes in θ and outputs, e.g., iterations (or the quantity of interest)
 # N samples will be taken in the hyperbox  lb ≤ θ ≤ ub
@@ -22,7 +25,10 @@ function compute_centers(part)
 	return
   end
   nth = size(part[1].Ath,1);
-  lib = DefaultLibrary{Float64}(()->GLPK.Optimizer());
+  solver = MOI.OptimizerWithAttributes(GLPK.Optimizer,
+                                       MOI.Silent()=>true,
+                                       "tol_bnd"=>1e-7)
+  lib = DefaultLibrary{Float64}(solver);
   centers = Vector{Float64}[];
   radii = Float64[];
   for (k,p) in enumerate(part)
